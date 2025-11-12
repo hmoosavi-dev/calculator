@@ -6,10 +6,10 @@ const calc = (() => {
     return Number(a) - Number(b);
   }
   function mult(a, b) {
-    return Number(a) * Number(b);
+    return Number(Number(a) * Number(b)).toFixed(2);
   }
   function div(a, b) {
-    return Number(a) / Number(b);
+    return Number(Number(a) / Number(b)).toFixed(2);
   }
   function evaluate(a, b, op) {
     switch (op) {
@@ -35,11 +35,14 @@ const numbers = document.querySelectorAll(".number");
 const clear = document.querySelector(".clear");
 const backspace = document.querySelector(".backspace");
 const history = document.querySelector(".history");
+const historyScreen = document.querySelector(".history-screen");
 const decimal = document.querySelector(".decimal");
-
 const functions = document.querySelectorAll(".func");
 const equals = document.querySelector(".equals");
 
+history.addEventListener("click", () => {
+  historyScreen.classList.toggle("invisible");
+});
 numbers.forEach((item) => {
   item.addEventListener("click", (e) => {
     screen.value += e.target.value;
@@ -59,14 +62,15 @@ equals.addEventListener("click", equalsFunction);
 
 function functionsFunction(e) {
   if (screen.value === "") return;
-  if (screen.value[screen.value.length - 1].match(/[\/\*\-\+]/g)) {
-    screen.value = screen.value.slice(0, -1);
+  if (screen.value[screen.value.length - 1].match(" ")) {
+    screen.value = screen.value.slice(0, -3);
   }
   let numbers = screen.value.split(/ \-| \+| \/| \* /);
   let operators = screen.value.match(/[\/\*\-\+]/g);
   if (numbers[0] < 0) operators.shift();
   if (numbers[1]) {
     screen.value = calc.evaluate(numbers[0], numbers[1], operators[0]);
+    createHistoryElement(numbers, operators);
   }
   screen.value += ` ${e.target.value} `;
 }
@@ -75,4 +79,11 @@ function equalsFunction() {
   let numbers = screen.value.split(/ \-| \+| \/| \* /);
   let operators = screen.value.match(/[\/\*\-\+]/g);
   screen.value = calc.evaluate(numbers[0], numbers[1], operators[0]);
+  createHistoryElement(numbers, operators);
+}
+function createHistoryElement(numbers, operators) {
+  let newChild = document.createElement("div");
+  newChild.classList.add("history-item");
+  newChild.textContent = `${numbers[0]} ${operators[0]} ${numbers[1]}     =  ${screen.value}`;
+  historyScreen.appendChild(newChild);
 }
