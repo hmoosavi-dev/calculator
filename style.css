@@ -116,3 +116,17 @@ button:hover {
 .invisible {
   opacity: 0;
 }
+
+@media screen and (width < 500px) {
+  body {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+  .calculator {
+    margin: auto auto 4rem;
+    width: 340px;
+  }
+  button {
+    padding: 15px;
+  }
+}
